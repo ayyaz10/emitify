@@ -10,47 +10,69 @@ let socket;
 
 
 const Chat = () => {
-  const [room, setRoom] = useState('')
+  const { name, room } = queryString.parse(location.search);
+  const [roomName, setRoomName] = useState('')
+  const [userName, setUserName] = useState('')
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+  const [incommingMessages, setIncommingMessages] = useState([]);
+  const [outGoingMessages, setOutGoingMessage] = useState([]);
+  const [me, setMe] = useState('')
 
+  
   useEffect(() => {
     socket = io.connect(ENDPOINT);
   }, [ENDPOINT])
   
   useEffect(() => {
-    const { name, room } = queryString.parse(location.search);
-    console.log(name, room)
-    setRoom(room);
+  
+    // console.log(name, room)
+    setRoomName(room);
+    setUserName(name);
+    setMe(name)
     if(room !== '') {
       socket.emit('joinRoom', room);
     }  
-  }, [room])
+  }, [roomName])
+
 
 
   
  
   const sendMessage = () => {
+    if(message === '') return;
+    setOutGoingMessage([...outGoingMessages, message]);
+    
     socket.emit('sendMessage', {message, room});
   }
 
   useEffect(() => {
     socket.on('receiveMessage', (data) => {
-      setMessages([...messages, data]);
-  
+      setIncommingMessages([...incommingMessages, data]);
     })
-  }, [messages])
-
+  }, [incommingMessages])
+  console.log("name", name)
+  console.log("me", me)
   return (
     <div className="outer-container">
       <div className='inner-container'>
         <h1 className="heading">Chat</h1>
+        <p>Room: {roomName}</p>
+        <p>User: {userName}</p>
         <div className="chat-container">
-          <div >
-            {messages.map((message, index) => (
+
+          <div className='otherMessage'>
+            {incommingMessages.map((message, index) => (
               <div className="messages" key={index}>{message.message}</div>
             ))}
           </div>
+          {me === name && (
+            <div className='personalMessage'>
+            {outGoingMessages.map((message, index) => (
+              <div className="messages" key={index}>{message}</div>
+            ))}
+          </div>
+          )
+        }
           <div className="chat-inner-container">
             <div className="input-container">
               <input

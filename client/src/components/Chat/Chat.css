@@ -10,8 +10,13 @@
   font-size: 30px;
   color: #ffffff;
   text-align: center;
-  padding: 30px 0;
+  padding: 30px 0 10px 0;
 
+}
+
+p {
+  color: #fff;
+  text-align: center;
 }
 
 .inner-container {
@@ -30,6 +35,17 @@
   gap: 10;
   justify-content: center;
   align-items: center;
+}
+
+.personalMessage .messages {
+  color: #fff;
+  background-color: green;
+  padding: 10px;
+  margin: 10px 0;
+  max-width: 60%;
+  word-wrap: break-word;
+  border-radius: 30px;
+  overflow: hidden;
 }
 
 .messages {
